@@ -49,9 +49,9 @@ myPromise.then((b) => {
 
 ##### `ignoreLastCallback`
 
-You can pass an `{ ignoreLastCallback: true }` as an option to this rule to the
-last `then()` callback in a promise chain does not warn if it does not have a
-`return`. Default is `false`.
+You can pass an `{ ignoreLastCallback: true }` as an option to this rule so that
+the last `then()` callback in a promise chain does not warn if it does not have
+a `return`. Default is `false`.
 
 ```js
 // OK
@@ -91,4 +91,30 @@ function foo() {
     console.log(x)
   })
 }
+```
+
+##### `ignoreAssignmentVariable`
+
+You can pass an `{ ignoreAssignmentVariable: [] }` as an option to this rule
+with a list of variable names so that the last `then()` callback in a promise
+chain does not warn if it does an assignment to a global variable. Default is
+`[]`.
+
+```js
+/* eslint promise/always-return: ["error", { ignoreAssignmentVariable: ["window"] }] */
+
+// OK
+promise.then((x) => {
+  window.x = x
+})
+
+promise
+  // NG
+  .then((x) => {
+    window.x.y = x
+  })
+  // NG
+  .then((x) => {
+    let b = x
+  })
 ```

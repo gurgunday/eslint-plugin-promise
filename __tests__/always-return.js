@@ -105,6 +105,14 @@ ruleTester.run('always-return', rule, {
         .finally(() => console.error('end'))`,
       options: [{ ignoreLastCallback: true }],
     },
+    {
+      code: `hey.then(x => { window.a = x })`,
+      options: [{ ignoreAssignmentVariable: ['window'] }],
+    },
+    {
+      code: `hey.then(x => { window.a.x = x })`,
+      options: [{ ignoreAssignmentVariable: ['window.a'] }],
+    },
   ],
 
   invalid: [
@@ -228,6 +236,31 @@ ruleTester.run('always-return', rule, {
     {
       code: `const foo = (42, hey.then(x => { console.log(x) }))`,
       options: [{ ignoreLastCallback: true }],
+      errors: [{ message }],
+    },
+    {
+      code: `hey.then(x => { console.log(x) })`,
+      options: [{ ignoreAssignmentVariable: ['window'] }],
+      errors: [{ message }],
+    },
+    {
+      code: `hey.then(x => { console.log(x) })`,
+      options: [{ ignoreAssignmentVariable: ['window.s'] }],
+      errors: [{ message }],
+    },
+    {
+      code: `hey.then(x => { ++window.a })`,
+      options: [{ ignoreAssignmentVariable: ['window.a'] }],
+      errors: [{ message }],
+    },
+    {
+      code: `hey.then(x => { window.a.b.c = x })`,
+      options: [{ ignoreAssignmentVariable: ['window.a'] }],
+      errors: [{ message }],
+    },
+    {
+      code: `hey.then(x => { let a = x })`,
+      options: [{ ignoreAssignmentVariable: ['window.a'] }],
       errors: [{ message }],
     },
   ],
